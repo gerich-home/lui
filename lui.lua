@@ -151,6 +151,12 @@ lo.bindingHandlers.foreach = {
         local template = self.template[control]
         local controls = {}
         
+        for _, controls in pairs(self.controls[control]) do
+            for i = 1, #controls do
+                iup.Destroy(controls[i])
+            end
+        end
+        
         local index = 1
         for key, item in pairs(items) do
             local itemBindingContext = {
@@ -174,14 +180,18 @@ lo.bindingHandlers.foreach = {
             for i = 1, #template do
                 local newControl = lo.applyBindings(item, template[i], itemBindingContext)
                 iup.Append(realControl, newControl)
+                iup.Map(newControl)
                 newControls[i] = newControl
             end
             
             controls[key] = newControls
             index = index + 1
         end
+        
         self.controls[control] = controls
-    end,
+        
+        iup.Refresh(realControl)
+    end
 }
 
 ---------------------------------------------------------------------------------------------------------------

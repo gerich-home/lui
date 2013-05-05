@@ -14,11 +14,15 @@ local mainViewModel = function(self)
         return "Counter = " .. self.counter()
     end)
     
-    self.items = {
-        {x = 11, y = 24},
-        {x = 15, y = 21},
-        {x = 12, y = 23},
-    }
+    self.items = lo.computed(function()
+        print(1)
+        items = {}
+        for i = 1, self.counter() do
+            items[i] = i * i
+        end
+        
+        return items
+    end)
     
     return self
 end
@@ -35,25 +39,8 @@ local template = lui.dialog {
         lui.vbox {
             databind = { foreach = "items" },
             
-            lui.hbox {
-                databind = { foreach = "items" },
-                
-                lui.vbox {
-                    lui.hbox {
-                        lui.label {
-                            databind = { title = "x" },
-                        },
-                        lui.label {
-                            title = " x ",
-                        },
-                        lui.label {
-                            databind = { title = "y" },
-                        },
-                    },
-                    lui.button {
-                        databind = { action = "change", title = "_index * _parentContext._index" }
-                    }
-                }
+            lui.label {
+                databind = { title = "_data" }
             }
         }
     }
